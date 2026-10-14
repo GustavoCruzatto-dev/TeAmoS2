@@ -1,0 +1,269 @@
+:root {
+    --vinho-noite: #12060f;
+    --rosa: #ff7aa5;
+    --rosa-claro: #ffc2d4;
+    --creme: #fff1f4;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background: radial-gradient(120% 90% at 50% 38%, #3b0f29 0%, #1d0817 55%, var(--vinho-noite) 100%);
+    color: var(--creme);
+    font-family: "Jost", system-ui, sans-serif;
+    font-weight: 300;
+    overflow: hidden;
+}
+
+/* ---------- Layout ---------- */
+
+.cena {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    padding: calc(1.5rem + env(safe-area-inset-top)) 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 3.5dvh, 2rem);
+    text-align: center;
+}
+
+.dedicatoria,
+.promessa,
+.mensagem {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-style: italic;
+}
+
+.dedicatoria,
+.promessa {
+    font-size: 1.4rem;
+    color: var(--rosa-claro);
+}
+
+.palco {
+    --larg: min(84vw, 58dvh, 420px);
+    position: relative;
+    width: var(--larg);
+    aspect-ratio: 220 / 200;
+}
+
+.coracao {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* luz suave atrás do coração */
+.brilho {
+    position: absolute;
+    inset: -28%;
+    background: radial-gradient(closest-side, rgba(255, 60, 120, 0.4), transparent);
+    opacity: 0.85;
+}
+
+/* ---------- Coração ---------- */
+
+.contorno {
+    fill: rgba(255, 194, 212, 0.05);
+    stroke: url(#traco);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 0;
+}
+
+.liquido {
+    transform: translateY(-10px); /* estado final: coração cheio */
+}
+
+.onda {
+    animation: correr 6s linear infinite;
+}
+
+.onda-frente {
+    animation-duration: 3.8s;
+    animation-direction: reverse;
+}
+
+.vidro {
+    opacity: 0.4;
+}
+
+/* ---------- Mensagem ---------- */
+
+.mensagem {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 43%;
+    transform: translateY(-50%);
+    font-weight: 600;
+    font-size: calc(var(--larg) * 0.16);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    color: var(--creme);
+    text-shadow: 0 2px 18px rgba(120, 10, 50, 0.55);
+}
+
+.promessa {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+/* ---------- Botão ---------- */
+
+.de-novo {
+    min-height: 46px;
+    padding: 0.7rem 1.6rem;
+    font: inherit;
+    font-weight: 400;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    color: var(--rosa-claro);
+    background: transparent;
+    border: 1px solid rgba(255, 194, 212, 0.35);
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.de-novo:hover {
+    background: rgba(255, 194, 212, 0.1);
+}
+
+.de-novo:focus-visible {
+    outline: 2px solid var(--rosa);
+    outline-offset: 3px;
+}
+
+/* ---------- Partículas ---------- */
+
+#particulas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* ---------- Sequência da animação ---------- */
+
+.rodando .dedicatoria {
+    animation: aparecer 1.6s 0.3s ease-out both;
+}
+
+.rodando .contorno {
+    animation: tracar 2.6s 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+.rodando .brilho {
+    animation: acender 6s 2.8s ease-in both;
+}
+
+.rodando .liquido {
+    animation: subir 6s 2.8s cubic-bezier(0.42, 0, 0.25, 1) both;
+}
+
+.rodando .vidro {
+    animation: aparecer-vidro 2s 7.2s ease-out both;
+}
+
+.rodando .mensagem {
+    animation: revelar 2.4s 7.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* depois que o coração enche */
+
+.completo .palco {
+    animation: bater 2s ease-in-out infinite;
+}
+
+.completo .promessa {
+    opacity: 1;
+    transform: none;
+    transition: opacity 1.8s 0.8s ease, transform 1.8s 0.8s ease;
+}
+
+.completo .de-novo {
+    opacity: 0.85;
+    pointer-events: auto;
+    transition: opacity 1.2s 3.2s ease;
+}
+
+.completo #particulas {
+    opacity: 1;
+    transition: opacity 2.5s ease;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes aparecer {
+    from { opacity: 0; }
+}
+
+@keyframes tracar {
+    from { stroke-dashoffset: 1; }
+}
+
+@keyframes acender {
+    from { opacity: 0; }
+}
+
+@keyframes subir {
+    from { transform: translateY(195px); }
+}
+
+@keyframes correr {
+    to { transform: translateX(-100px); }
+}
+
+@keyframes aparecer-vidro {
+    from { opacity: 0; }
+}
+
+@keyframes revelar {
+    from {
+        opacity: 0;
+        filter: blur(12px);
+        letter-spacing: 0.22em;
+    }
+}
+
+@keyframes bater {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.045); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.03); }
+    70% { transform: scale(1); }
+}
+
+/* quem pede menos movimento: mantém a história, tira o que é repetitivo */
+@media (prefers-reduced-motion: reduce) {
+    .onda,
+    .completo .palco {
+        animation: none;
+    }
+
+    #particulas {
+        display: none;
+    }
+}
